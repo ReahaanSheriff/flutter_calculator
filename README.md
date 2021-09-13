@@ -1,5 +1,5 @@
 # calculator
-
+This is a simple calculator app used to perform basic arithmetic operations.<br/>
 A new Flutter project.
 
 ## Getting Started
