@@ -1,3 +1,4 @@
+//import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 
@@ -65,6 +66,46 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            // Row(
+            //   children: <Widget>[
+            //     Expanded(
+            //       child: Container(
+            //         padding: EdgeInsets.all(10.0),
+            //         alignment: Alignment.bottomRight,
+            //         child: Text(
+            //           history,
+            //           style: TextStyle(
+            //             fontSize: 55.0,
+            //             fontWeight: FontWeight.w500,
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            Row(
+              children: <Widget>[
+                Center(
+                  child: RaisedButton(
+                    child: Text(
+                      'History',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    color: Colors.black,
+                    onPressed: () {
+                      history = his;
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            _buildPopupDialog(context),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
             Row(
               children: <Widget>[
                 // ignore: deprecated_member_use
@@ -108,6 +149,30 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildPopupDialog(BuildContext context) {
+    return new AlertDialog(
+      title: const Text('History'),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(history),
+        ],
+      ),
+      actions: <Widget>[
+        //customOutlineButton("His"),
+        new FlatButton(
+          onPressed: () {
+            history = his;
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
   Widget customOutlineButton(String val) {
     return Expanded(
       child: OutlineButton(
@@ -121,6 +186,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  String history = "";
+  String his = "";
   String equation = "";
   String result = "";
   String expression = "";
@@ -132,15 +199,20 @@ class _HomePageState extends State<HomePage> {
       } else if (btext == "=") {
         expression = equation;
         expression = expression.replaceAll("X", "*");
+        his = his + expression.toString() + btext;
 
         try {
           Parser p = new Parser();
           Expression exp = p.parse(expression);
           ContextModel cm = ContextModel();
           result = '${exp.evaluate(EvaluationType.REAL, cm)}';
+          his = his + result.toString() + '\n';
         } catch (e) {
           result = "Error";
+          his = his + result + '\n';
         }
+      } else if (btext == "His") {
+        history = his;
       } else {
         if (equation == "0") {
           equation = btext;
